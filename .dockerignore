@@ -1,0 +1,54 @@
+# Docker
+node_modules
+npm-debug.log
+Dockerfile*
+docker-compose*
+.dockerignore
+
+# Git
+.git
+.gitignore
+
+# CI/CD
+.github
+
+# Local env files
+.env.local
+.env.*.local
+
+# Logs
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Coverage directory used by tools like istanbul
+coverage
+
+# Dependency directories
+node_modules/
+
+# TypeScript
+*.tsbuildinfo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# Test
+test/
+*.spec.ts
+*.test.ts
+
+# Development files
+README.md
+.eslintrc.js
+.prettierrc
+tsconfig.json
+nest-cli.json
