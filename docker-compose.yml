@@ -1,0 +1,80 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: product-sync-db
+    environment:
+      POSTGRES_DB: product_sync
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - product-sync-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # NestJS Application
+  # app:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   container_name: product-sync-app
+  #   environment:
+  #     NODE_ENV: production
+  #     PORT: 3001
+  #     DATABASE_HOST: postgres
+  #     DATABASE_PORT: 5432
+  #     DATABASE_USERNAME: postgres
+  #     DATABASE_PASSWORD: postgres
+  #     DATABASE_NAME: product_sync
+  #     CONTENTFUL_SPACE_ID: 9xs1613l9f7v
+  #     CONTENTFUL_ACCESS_TOKEN: I-ThsT55eE_B3sCUWEQyDT4VqVO3x__20ufuie9usns
+  #     CONTENTFUL_ENVIRONMENT: master
+  #     CONTENTFUL_CONTENT_TYPE: product
+  #     JWT_SECRET: your-production-jwt-secret-change-this
+  #     JWT_EXPIRES_IN: 24h
+  #   ports:
+  #     - "3001:3001"
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #   networks:
+  #     - product-sync-network
+  #   restart: unless-stopped
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "curl -f http://localhost:3001/ || exit 1"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+  #     start_period: 40s
+
+  # pgAdmin (Optional - for database management)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: product-sync-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    networks:
+      - product-sync-network
+    profiles:
+      - pgadmin
+
+volumes:
+  postgres_data:
+
+networks:
+  product-sync-network:
+    driver: bridge
