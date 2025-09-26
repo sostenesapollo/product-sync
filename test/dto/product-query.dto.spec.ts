@@ -47,10 +47,10 @@ describe('ProductQueryDto', () => {
     });
 
     it('should handle limit and price validation', async () => {
-      const data = { 
-        limit: 5, 
-        minPrice: 10.50,
-        maxPrice: 99.99
+      const data = {
+        limit: 5,
+        minPrice: 10.5,
+        maxPrice: 99.99,
       };
 
       const dto = plainToClass(ProductQueryDto, data);
@@ -58,7 +58,7 @@ describe('ProductQueryDto', () => {
 
       expect(errors.length).toBe(0);
       expect(dto.limit).toBe(5);
-      expect(dto.minPrice).toBe(10.50);
+      expect(dto.minPrice).toBe(10.5);
       expect(dto.maxPrice).toBe(99.99);
     });
 
