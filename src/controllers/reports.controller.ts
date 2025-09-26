@@ -23,8 +23,8 @@ export class ReportsController {
   constructor(private readonly reportsService: ReportsService) {}
 
   @Get('product-stats')
-  @ApiOperation({ 
-    summary: 'Get product statistics (deleted vs active percentages)'
+  @ApiOperation({
+    summary: 'Get product statistics (deleted vs active percentages)',
   })
   @ApiResponse({
     status: 200,
@@ -44,8 +44,8 @@ export class ReportsController {
   }
 
   @Get('price-stats')
-  @ApiOperation({ 
-    summary: 'Get price statistics (with/without price percentages)'
+  @ApiOperation({
+    summary: 'Get price statistics (with/without price percentages)',
   })
   @ApiResponse({
     status: 200,
@@ -68,8 +68,8 @@ export class ReportsController {
   }
 
   @Get('category-report')
-  @ApiOperation({ 
-    summary: 'Get category-wise product breakdown'
+  @ApiOperation({
+    summary: 'Get category-wise product breakdown',
   })
   @ApiResponse({
     status: 200,
@@ -80,8 +80,8 @@ export class ReportsController {
   }
 
   @Get('custom-report')
-  @ApiOperation({ 
-    summary: 'Get custom analytics report (top brands, low stock, etc.)'
+  @ApiOperation({
+    summary: 'Get custom analytics report (top brands, low stock, etc.)',
   })
   @ApiResponse({
     status: 200,
