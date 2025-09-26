@@ -47,6 +47,9 @@ importers:
       class-validator:
         specifier: ^0.14.2
         version: 0.14.2
+      jest-environment-node:
+        specifier: ^30.1.2
+        version: 30.1.2
       passport:
         specifier: ^0.7.0
         version: 0.7.0

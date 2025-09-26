@@ -47,7 +47,9 @@ describe('ScheduleService', () => {
     });
 
     it('should handle sync errors gracefully', async () => {
-      const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
+      const loggerSpy = jest
+        .spyOn(service['logger'], 'error')
+        .mockImplementation();
 
       mockContentfulService.syncProducts.mockRejectedValue(
         new Error('Sync failed'),
@@ -56,12 +58,12 @@ describe('ScheduleService', () => {
       await service.handleProductSync();
 
       expect(mockContentfulService.syncProducts).toHaveBeenCalled();
-      expect(consoleSpy).toHaveBeenCalledWith(
-        'Error during scheduled product sync:',
+      expect(loggerSpy).toHaveBeenCalledWith(
+        'Scheduled product sync failed:',
         expect.any(Error),
       );
 
-      consoleSpy.mockRestore();
+      loggerSpy.mockRestore();
     });
   });
 });

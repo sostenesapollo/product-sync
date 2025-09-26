@@ -33,6 +33,8 @@ services:
       DATABASE_USERNAME: postgres
       DATABASE_PASSWORD: postgres
       DATABASE_NAME: product_sync
+      # I would not expose this credentials like this, that's just for demo purposes, and it's easier to run
+      # Just run docker compose up
       CONTENTFUL_SPACE_ID: 9xs1613l9f7v
       CONTENTFUL_ACCESS_TOKEN: I-ThsT55eE_B3sCUWEQyDT4VqVO3x__20ufuie9usns
       CONTENTFUL_ENVIRONMENT: master

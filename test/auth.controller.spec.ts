@@ -8,7 +8,6 @@ describe('AuthController', () => {
   let controller: AuthController;
 
   const mockAuthService = {
-    validateUser: jest.fn(),
     login: jest.fn(),
   };
 
@@ -36,8 +35,8 @@ describe('AuthController', () => {
 
   describe('login', () => {
     const loginDto: LoginDto = {
-      username: 'testuser',
-      password: 'testpass',
+      username: 'admin',
+      password: 'password123',
     };
 
     it('should return access token on successful login', async () => {
@@ -45,50 +44,35 @@ describe('AuthController', () => {
         access_token: 'jwt-token',
         user: {
           id: 1,
-          username: 'testuser',
+          username: 'admin',
+          roles: ['admin'],
         },
       };
 
-      mockAuthService.validateUser.mockResolvedValue({
-        id: 1,
-        username: 'testuser',
-      });
       mockAuthService.login.mockResolvedValue(expectedResult);
 
       const result = await controller.login(loginDto);
 
-      expect(mockAuthService.validateUser).toHaveBeenCalledWith(
-        loginDto.username,
-        loginDto.password,
-      );
-      expect(mockAuthService.login).toHaveBeenCalledWith({
-        id: 1,
-        username: 'testuser',
-      });
+      expect(mockAuthService.login).toHaveBeenCalledWith(loginDto);
       expect(result).toEqual(expectedResult);
     });
 
-    it('should throw UnauthorizedException on invalid credentials', async () => {
-      mockAuthService.validateUser.mockResolvedValue(null);
+    it('should throw UnauthorizedException when service throws error', async () => {
+      mockAuthService.login.mockRejectedValue(new Error('Invalid credentials'));
 
       await expect(controller.login(loginDto)).rejects.toThrow(
         UnauthorizedException,
       );
-      expect(mockAuthService.validateUser).toHaveBeenCalledWith(
-        loginDto.username,
-        loginDto.password,
-      );
-      expect(mockAuthService.login).not.toHaveBeenCalled();
+      expect(mockAuthService.login).toHaveBeenCalledWith(loginDto);
     });
 
-    it('should handle validation errors', async () => {
+    it('should handle validation errors gracefully', async () => {
       const invalidLoginDto = {
         username: '',
         password: '',
       } as LoginDto;
 
-      // The validation pipe should catch this, but we test the controller behavior
-      mockAuthService.validateUser.mockResolvedValue(null);
+      mockAuthService.login.mockRejectedValue(new Error('Validation failed'));
 
       await expect(controller.login(invalidLoginDto)).rejects.toThrow(
         UnauthorizedException,
