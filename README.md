@@ -147,6 +147,5 @@ pnpm run build
 pnpm run start:prod
 ```
 
-## License
-
-This project is proprietary software developed for Apply Digital.
+## Coverage
+<img width="1920" height="1017" alt="image" src="https://github.com/user-attachments/assets/3f4530c7-adc0-42e9-81b1-3e2027563066" />
