@@ -33,7 +33,7 @@ describe('AppController', () => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       expect(result.app.name).toBe('product-sync');
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      expect(result.app.version).toBe('0.0.1');
+      expect(result.app.version).toBe('0.0.2');
     });
   });
 });

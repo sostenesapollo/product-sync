@@ -15,7 +15,7 @@ export class AppService {
   constructor() {
     this.packageJson = JSON.parse(
       readFileSync(join(__dirname, '../package.json'), 'utf-8'),
-    );
+    ) as PackageJson;
   }
 
   getHello(): object {
