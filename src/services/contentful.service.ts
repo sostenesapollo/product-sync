@@ -4,7 +4,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import axios from 'axios';
 import { Product } from '../entities/product.entity';
-import { ContentfulResponse, ContentfulProduct } from '../interfaces/contentful.interface';
+import {
+  ContentfulResponse,
+  ContentfulProduct,
+} from '../interfaces/contentful.interface';
 
 @Injectable()
 export class ContentfulService {
@@ -21,9 +24,16 @@ export class ContentfulService {
     private productRepository: Repository<Product>,
   ) {
     this.spaceId = this.configService.get<string>('CONTENTFUL_SPACE_ID') || '';
-    this.accessToken = this.configService.get<string>('CONTENTFUL_ACCESS_TOKEN') || '';
-    this.environment = this.configService.get<string>('CONTENTFUL_ENVIRONMENT', 'master');
-    this.contentType = this.configService.get<string>('CONTENTFUL_CONTENT_TYPE', 'product');
+    this.accessToken =
+      this.configService.get<string>('CONTENTFUL_ACCESS_TOKEN') || '';
+    this.environment = this.configService.get<string>(
+      'CONTENTFUL_ENVIRONMENT',
+      'master',
+    );
+    this.contentType = this.configService.get<string>(
+      'CONTENTFUL_CONTENT_TYPE',
+      'product',
+    );
     this.baseUrl = `https://cdn.contentful.com/spaces/${this.spaceId}/environments/${this.environment}`;
   }
 
@@ -38,8 +48,10 @@ export class ContentfulService {
 
       this.logger.log('Fetching products from Contentful...');
       const response = await axios.get<ContentfulResponse>(url, { params });
-      
-      this.logger.log(`Fetched ${response.data.items.length} products from Contentful`);
+
+      this.logger.log(
+        `Fetched ${response.data.items.length} products from Contentful`,
+      );
       return response.data.items;
     } catch (error) {
       this.logger.error('Failed to fetch products from Contentful', error);
@@ -47,21 +59,25 @@ export class ContentfulService {
     }
   }
 
-  async syncProducts(): Promise<{ created: number; updated: number; errors: number }> {
+  async syncProducts(): Promise<{
+    created: number;
+    updated: number;
+    errors: number;
+  }> {
     const stats = { created: 0, updated: 0, errors: 0 };
-    
+
     try {
       const contentfulProducts = await this.fetchAllProducts();
-      
+
       for (const contentfulProduct of contentfulProducts) {
         try {
           await this.upsertProduct(contentfulProduct);
-          
+
           // Check if product exists to determine if it's created or updated
           const existingProduct = await this.productRepository.findOne({
             where: { contentfulId: contentfulProduct.sys.id },
           });
-          
+
           if (existingProduct) {
             stats.updated++;
           } else {
@@ -75,11 +91,11 @@ export class ContentfulService {
           stats.errors++;
         }
       }
-      
+
       this.logger.log(
         `Sync completed: ${stats.created} created, ${stats.updated} updated, ${stats.errors} errors`,
       );
-      
+
       return stats;
     } catch (error) {
       this.logger.error('Product sync failed', error);
@@ -87,7 +103,9 @@ export class ContentfulService {
     }
   }
 
-  private async upsertProduct(contentfulProduct: ContentfulProduct): Promise<Product> {
+  private async upsertProduct(
+    contentfulProduct: ContentfulProduct,
+  ): Promise<Product> {
     const productData = {
       contentfulId: contentfulProduct.sys.id,
       sku: contentfulProduct.fields.sku,

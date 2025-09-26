@@ -11,10 +11,10 @@ export class ScheduleService {
   @Cron(CronExpression.EVERY_HOUR)
   async handleProductSync() {
     this.logger.log('Starting scheduled product sync from Contentful...');
-    
+
     try {
       const result = await this.contentfulService.syncProducts();
-      
+
       this.logger.log(
         `Scheduled sync completed successfully: ${result.created} created, ${result.updated} updated, ${result.errors} errors`,
       );

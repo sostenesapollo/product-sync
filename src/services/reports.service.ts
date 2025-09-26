@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -32,7 +36,11 @@ export interface CategoryReport {
 }
 
 export interface CustomReport {
-  topBrands: Array<{ brand: string; productCount: number; averagePrice: number }>;
+  topBrands: Array<{
+    brand: string;
+    productCount: number;
+    averagePrice: number;
+  }>;
   lowStockProducts: Product[];
   recentlyAddedProducts: Product[];
   priceDistribution: Array<{ range: string; count: number }>;
@@ -59,8 +67,9 @@ export class ReportsService {
     queryBuilder.withDeleted();
     const allProductsCount = await queryBuilder.getCount();
     const deletedProducts = allProductsCount - totalProducts;
-    
-    const deletedPercentage = totalProducts > 0 ? (deletedProducts / allProductsCount) * 100 : 0;
+
+    const deletedPercentage =
+      totalProducts > 0 ? (deletedProducts / allProductsCount) * 100 : 0;
     const activePercentage = 100 - deletedPercentage;
 
     return {
@@ -87,9 +96,10 @@ export class ReportsService {
 
     const productsWithoutPrice = totalActiveProducts - productsWithPrice;
 
-    const withPricePercentage = totalActiveProducts > 0 
-      ? (productsWithPrice / totalActiveProducts) * 100 
-      : 0;
+    const withPricePercentage =
+      totalActiveProducts > 0
+        ? (productsWithPrice / totalActiveProducts) * 100
+        : 0;
     const withoutPricePercentage = 100 - withPricePercentage;
 
     // Get price statistics
@@ -119,14 +129,20 @@ export class ReportsService {
       .createQueryBuilder('product')
       .select('product.category')
       .addSelect('COUNT(*)', 'totalProducts')
-      .addSelect('COUNT(CASE WHEN product.deletedAt IS NULL THEN 1 END)', 'activeProducts')
-      .addSelect('COUNT(CASE WHEN product.deletedAt IS NOT NULL THEN 1 END)', 'deletedProducts')
+      .addSelect(
+        'COUNT(CASE WHEN product.deletedAt IS NULL THEN 1 END)',
+        'activeProducts',
+      )
+      .addSelect(
+        'COUNT(CASE WHEN product.deletedAt IS NOT NULL THEN 1 END)',
+        'deletedProducts',
+      )
       .addSelect('AVG(product.price)', 'averagePrice')
       .groupBy('product.category')
       .withDeleted()
       .getRawMany();
 
-    return categories.map(cat => ({
+    return categories.map((cat) => ({
       category: cat.product_category,
       totalProducts: parseInt(cat.totalProducts),
       activeProducts: parseInt(cat.activeProducts),
@@ -169,12 +185,15 @@ export class ReportsService {
     // Price distribution
     const priceDistribution = await this.productRepository
       .createQueryBuilder('product')
-      .select('CASE ' +
-        'WHEN product.price < 100 THEN \'$0-$99\' ' +
-        'WHEN product.price < 500 THEN \'$100-$499\' ' +
-        'WHEN product.price < 1000 THEN \'$500-$999\' ' +
-        'WHEN product.price < 2000 THEN \'$1000-$1999\' ' +
-        'ELSE \'$2000+\' END', 'range')
+      .select(
+        'CASE ' +
+          "WHEN product.price < 100 THEN '$0-$99' " +
+          "WHEN product.price < 500 THEN '$100-$499' " +
+          "WHEN product.price < 1000 THEN '$500-$999' " +
+          "WHEN product.price < 2000 THEN '$1000-$1999' " +
+          "ELSE '$2000+' END",
+        'range',
+      )
       .addSelect('COUNT(*)', 'count')
       .where('product.price IS NOT NULL')
       .andWhere('product.deletedAt IS NULL')
@@ -183,14 +202,14 @@ export class ReportsService {
       .getRawMany();
 
     return {
-      topBrands: topBrands.map(brand => ({
+      topBrands: topBrands.map((brand) => ({
         brand: brand.product_brand,
         productCount: parseInt(brand.productCount),
         averagePrice: parseFloat(brand.averagePrice || '0'),
       })),
       lowStockProducts,
       recentlyAddedProducts,
-      priceDistribution: priceDistribution.map(pd => ({
+      priceDistribution: priceDistribution.map((pd) => ({
         range: pd.range,
         count: parseInt(pd.count),
       })),

@@ -14,63 +14,87 @@ export class ProductsService {
     private productRepository: Repository<Product>,
   ) {}
 
-  async findAll(query: ProductQueryDto): Promise<PaginatedResponseDto<Product>> {
-    const { page, limit, name, category, brand, color, minPrice, maxPrice, sortBy, sortOrder } = query;
-    
+  async findAll(
+    query: ProductQueryDto,
+  ): Promise<PaginatedResponseDto<Product>> {
+    const {
+      page,
+      limit,
+      name,
+      category,
+      brand,
+      color,
+      minPrice,
+      maxPrice,
+      sortBy,
+      sortOrder,
+    } = query;
+
     const queryBuilder = this.createQueryBuilder();
-    
+
     // Apply filters
-    this.applyFilters(queryBuilder, { name, category, brand, color, minPrice, maxPrice });
-    
+    this.applyFilters(queryBuilder, {
+      name,
+      category,
+      brand,
+      color,
+      minPrice,
+      maxPrice,
+    });
+
     // Apply sorting
     this.applySorting(queryBuilder, sortBy, sortOrder);
-    
+
     // Calculate pagination
     const skip = (page - 1) * limit;
-    
+
     // Get total count
     const total = await queryBuilder.getCount();
-    
+
     // Apply pagination and get results
     const products = await queryBuilder.skip(skip).take(limit).getMany();
-    
-    this.logger.log(`Found ${products.length} products (total: ${total}) for page ${page}`);
-    
+
+    this.logger.log(
+      `Found ${products.length} products (total: ${total}) for page ${page}`,
+    );
+
     return new PaginatedResponseDto(products, total, page, limit);
   }
 
   async findById(id: string): Promise<Product> {
     const product = await this.productRepository.findOne({ where: { id } });
-    
+
     if (!product) {
       throw new NotFoundException(`Product with ID ${id} not found`);
     }
-    
+
     return product;
   }
 
   async delete(id: string): Promise<void> {
     const product = await this.findById(id);
-    
+
     await this.productRepository.softDelete(id);
-    
+
     this.logger.log(`Product ${product.name} (ID: ${id}) has been deleted`);
   }
 
   async restore(id: string): Promise<Product> {
     await this.productRepository.restore(id);
-    
+
     const restoredProduct = await this.productRepository.findOne({
       where: { id },
       withDeleted: true,
     });
-    
+
     if (!restoredProduct) {
       throw new NotFoundException(`Product with ID ${id} not found`);
     }
-    
-    this.logger.log(`Product ${restoredProduct.name} (ID: ${id}) has been restored`);
-    
+
+    this.logger.log(
+      `Product ${restoredProduct.name} (ID: ${id}) has been restored`,
+    );
+
     return restoredProduct;
   }
 
@@ -131,10 +155,16 @@ export class ProductsService {
     sortBy: string,
     sortOrder: 'ASC' | 'DESC',
   ): void {
-    const allowedSortFields = ['name', 'price', 'category', 'brand', 'createdAt'];
-    
+    const allowedSortFields = [
+      'name',
+      'price',
+      'category',
+      'brand',
+      'createdAt',
+    ];
+
     const field = allowedSortFields.includes(sortBy) ? sortBy : 'createdAt';
-    
+
     queryBuilder.orderBy(`product.${field}`, sortOrder);
   }
 }
