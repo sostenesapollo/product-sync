@@ -8,7 +8,6 @@ import { NotFoundException } from '@nestjs/common';
 describe('ProductsService', () => {
   let service: ProductsService;
 
-
   const mockRepository = {
     createQueryBuilder: jest.fn(() => ({
       where: jest.fn().mockReturnThis(),
