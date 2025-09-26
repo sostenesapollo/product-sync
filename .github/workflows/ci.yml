@@ -91,7 +91,7 @@ jobs:
 
       - name: 📊 Upload coverage reports
         if: success()
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           file: ./coverage/lcov.info
           flags: unittests
