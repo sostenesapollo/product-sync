@@ -6,14 +6,8 @@ import {
   Query,
   Post,
   ValidationPipe,
-  UseGuards,
 } from '@nestjs/common';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiResponse,
-  ApiParam,
-} from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { ProductsService } from '../services/products.service';
 import { ContentfulService } from '../services/contentful.service';
 import { Product } from '../entities/product.entity';
