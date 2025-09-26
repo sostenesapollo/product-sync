@@ -1,15 +1,31 @@
 import { Injectable } from '@nestjs/common';
-import * as packageJson from '../package.json';
+import { readFileSync } from 'fs';
+import { join } from 'path';
+
+interface PackageJson {
+  name: string;
+  version: string;
+  description?: string;
+}
 
 @Injectable()
 export class AppService {
+  private packageJson: PackageJson;
+
+  constructor() {
+    this.packageJson = JSON.parse(
+      readFileSync(join(__dirname, '../package.json'), 'utf-8'),
+    ) as PackageJson;
+  }
+
   getHello(): object {
     return {
       message: 'Product Sync API',
       app: {
-        name: packageJson.name,
-        version: packageJson.version,
+        name: this.packageJson.name,
+        version: this.packageJson.version,
         description:
+          this.packageJson.description ||
           'NestJS API for Contentful product synchronization with JWT authentication and analytics',
       },
       endpoints: {

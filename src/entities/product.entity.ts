@@ -17,69 +17,69 @@ import { ApiProperty } from '@nestjs/swagger';
 export class Product {
   @ApiProperty({ description: 'Product ID' })
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @ApiProperty({ description: 'Contentful entry ID' })
   @Column({ unique: true })
-  contentfulId: string;
+  contentfulId!: string;
 
   @ApiProperty({ description: 'Product SKU' })
   @Column({ unique: true })
-  sku: string;
+  sku!: string;
 
   @ApiProperty({ description: 'Product name' })
   @Column()
-  name: string;
+  name!: string;
 
   @ApiProperty({ description: 'Product brand' })
   @Column()
-  brand: string;
+  brand!: string;
 
   @ApiProperty({ description: 'Product model' })
   @Column()
-  model: string;
+  model!: string;
 
   @ApiProperty({ description: 'Product category' })
   @Column()
-  category: string;
+  category!: string;
 
   @ApiProperty({ description: 'Product color' })
   @Column()
-  color: string;
+  color!: string;
 
   @ApiProperty({ description: 'Product price', nullable: true })
   @Column('decimal', { precision: 10, scale: 2, nullable: true })
-  price: number | null;
+  price!: number | null;
 
   @ApiProperty({ description: 'Price currency', nullable: true })
   @Column('varchar', { nullable: true })
-  currency: string | null;
+  currency!: string | null;
 
   @ApiProperty({ description: 'Stock quantity' })
   @Column('int')
-  stock: number;
+  stock!: number;
 
   @ApiProperty({ description: 'Creation date' })
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   @ApiProperty({ description: 'Last update date' })
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt!: Date;
 
   @ApiProperty({ description: 'Deletion date (soft delete)', nullable: true })
   @DeleteDateColumn()
-  deletedAt: Date | null;
+  deletedAt!: Date | null;
 
   @ApiProperty({ description: 'Contentful creation date' })
   @Column()
-  contentfulCreatedAt: Date;
+  contentfulCreatedAt!: Date;
 
   @ApiProperty({ description: 'Contentful update date' })
   @Column()
-  contentfulUpdatedAt: Date;
+  contentfulUpdatedAt!: Date;
 
   @ApiProperty({ description: 'Last sync date from Contentful' })
   @Column()
-  lastSyncAt: Date;
+  lastSyncAt!: Date;
 }
